@@ -1,8 +1,4 @@
 <?php
-require 'lib/lime.php';
-require 'src/TwoDialog/Test/TestCase.php';
-require 'src/TwoDialog/Test/TestRunner.php';
-
 class ExampleTest extends TwoDialog_Test_TestCase
 {
     public function testCanRunTests()
@@ -18,6 +14,3 @@ class ExampleTest extends TwoDialog_Test_TestCase
     
     public function anotherTest() {}
 }
-
-$runner = new TwoDialog_Test_TestRunner();
-$runner->run(new ExampleTest());

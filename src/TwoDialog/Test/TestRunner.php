@@ -1,7 +1,35 @@
 <?php
 class TwoDialog_Test_TestRunner
 {
-    public function run(TwoDialog_Test_TestCase $test)
+    /**
+     * @var array
+     */
+    protected $tests;
+    
+    public function __construct()
+    {
+        $this->tests = array();
+    }
+    
+    /**
+     * @param TwoDialog_Test_TestCase $test
+     */
+    public function addTestCase(TwoDialog_Test_TestCase $test)
+    {
+        $this->tests[] = $test;
+    }
+    
+    public function run()
+    {
+        foreach ($this->tests as $testCase) {
+            $this->runTestCase($testCase);
+        }
+    }
+    
+    /**
+     * @param TwoDialog_Test_TestCase $test
+     */
+    protected function runTestCase(TwoDialog_Test_TestCase $test)
     {
         $class = new ReflectionClass(get_class($test));
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);

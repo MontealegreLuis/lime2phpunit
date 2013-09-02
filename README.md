@@ -6,4 +6,4 @@ Bridge to migrate lime tests to PHPUnit
 
 To run the examples use the following command.
 
-    php examples/ExampleTest.php
+    php index.php

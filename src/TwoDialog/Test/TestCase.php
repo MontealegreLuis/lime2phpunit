@@ -1,5 +1,40 @@
 <?php
-class TwoDialog_Test_TestCase
+require_once 'lime.php';
+require_once 'PHPUnit/Util/Class.php';
+require_once 'PHPUnit/Framework/SelfDescribing.php';
+require_once 'PHPUnit/Framework/Constraint.php';
+require_once 'PHPUnit/Framework/AssertionFailedError.php';
+require_once 'PHPUnit/Framework/ExpectationFailedException.php';
+require_once 'PHPUnit/Framework/Constraint/IsEqual.php';
+require_once 'PHPUnit/Framework/MockObject/Stub.php';
+require_once 'PHPUnit/Framework/MockObject/MockBuilder.php';
+require_once 'PHPUnit/Framework/MockObject/Stub/MatcherCollection.php';
+require_once 'PHPUnit/Framework/MockObject/Stub/Return.php';
+require_once 'PHPUnit/Framework/MockObject/Verifiable.php';
+require_once 'PHPUnit/Framework/MockObject/Invokable.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher/Invocation.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher/InvokedRecorder.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher/InvokedCount.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher/StatelessInvocation.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher/Parameters.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher/MethodName.php';
+require_once 'PHPUnit/Framework/MockObject/Matcher.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/Namespace.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/Identity.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/Stub.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/Match.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/ParametersMatch.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/MethodNameMatch.php';
+require_once 'PHPUnit/Framework/MockObject/Builder/InvocationMocker.php';
+require_once 'PHPUnit/Framework/MockObject/InvocationMocker.php';
+require_once 'PHPUnit/Framework/MockObject/Invocation.php';
+require_once 'PHPUnit/Framework/MockObject/Invocation/Static.php';
+require_once 'PHPUnit/Framework/MockObject/Invocation/Object.php';
+require_once 'PHPUnit/Framework/MockObject/Generator.php';
+require_once 'PHPUnit/Framework/MockObject/MockObject.php';
+require_once 'PHPUnit/Framework/TestCase.php';
+
+class TwoDialog_Test_TestCase implements PHPUnit_Framework_TestCase
 {
     /**
      * @type lime_test
@@ -7,11 +42,23 @@ class TwoDialog_Test_TestCase
     protected $test;
     
     /**
+     * @var array
+     */
+    protected $mockObjects;
+    
+    /**
+     * @var PHPUnit_Framework_MockObject_Generator
+     */
+    protected $mockObjectGenerator;
+    
+    /**
      * Initialize lime_test instance
      */
     public function __construct()
     {
         $this->test = new lime_test(null, array('force_colors' => true));
+        $this->mockObjects = array();
+        $this->mockObjectGenerator = new PHPUnit_Framework_MockObject_Generator();
     }
     
     /**
@@ -139,7 +186,78 @@ class TwoDialog_Test_TestCase
     {
         $this->test->skip($message);
     }
-       
+
+    /**
+     * Returns a builder object to create mock objects using a fluent interface.
+     *
+     * @param string $className
+     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @since Method available since Release 3.5.0
+     */
+    public function getMockBuilder($className)
+    {
+        return new PHPUnit_Framework_MockObject_MockBuilder(
+            $this, $className
+        );
+    }
+    
+    /**
+     * Returns a matcher that matches when the method it is evaluated for
+     * is executed exactly once.
+     *
+     * @return PHPUnit_Framework_MockObject_Matcher_InvokedCount
+     * @since Method available since Release 3.0.0
+     */
+    public function once()
+    {
+        return new PHPUnit_Framework_MockObject_Matcher_InvokedCount(1);
+    }
+    
+    /**
+     * @param mixed $value
+     * @return PHPUnit_Framework_MockObject_Stub_Return
+     * @since Method available since Release 3.0.0
+     */
+    public function returnValue($value)
+    {
+        return new PHPUnit_Framework_MockObject_Stub_Return($value);
+    }
+    
+    /**
+     * Returns a mock object for the specified class.
+     *
+     * @param string $originalClassName
+     * @param array $methods
+     * @param array $arguments
+     * @param string $mockClassName
+     * @param boolean $callOriginalConstructor
+     * @param boolean $callOriginalClone
+     * @param boolean $callAutoload
+     * @param boolean $cloneArguments
+     * @param boolean $callOriginalMethods
+     * @return PHPUnit_Framework_MockObject_MockObject
+     * @throws PHPUnit_Framework_Exception
+     * @since Method available since Release 3.0.0
+     */
+    public function getMock($originalClassName, $methods = array(), array $arguments = array(), $mockClassName = '', $callOriginalConstructor = TRUE, $callOriginalClone = TRUE, $callAutoload = TRUE, $cloneArguments = FALSE, $callOriginalMethods = FALSE)
+    {
+        $mockObject = $this->mockObjectGenerator->getMock(
+            $originalClassName,
+            $methods,
+            $arguments,
+            $mockClassName,
+            $callOriginalConstructor,
+            $callOriginalClone,
+            $callAutoload,
+            $cloneArguments,
+            $callOriginalMethods
+        );
+    
+        $this->mockObjects[] = $mockObject;
+    
+        return $mockObject;
+    }
+    
     /**
      * Proxies method lime_test::diag
      * 
